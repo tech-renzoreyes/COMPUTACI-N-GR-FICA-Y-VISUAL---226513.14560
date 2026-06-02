@@ -365,12 +365,9 @@ FodyWeavers.xsd
 # ========================================================================
 # REGLAS PERSONALIZADAS PARA EL PROYECTO OPENGL
 # ========================================================================
-# Las siguientes líneas evitan que Git ignore los archivos de dependencias
-# aunque estén dentro de carpetas llamadas "Release" o "x64".
+# Desbloqueo absoluto de la carpeta openGLTools y todo su contenido
+# (dependencias, frameworks, librerías, archivos binarios, etc.)
 
 !openGLTools/
-!openGLTools/**/Release/
-!openGLTools/**/x64/
-!openGLTools/**/*.lib
-!openGLTools/**/*.dll
-!openGLTools/**/*.h
+!openGLTools/**
+!openGLTools/**/*
