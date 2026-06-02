@@ -361,3 +361,16 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ========================================================================
+# REGLAS PERSONALIZADAS PARA EL PROYECTO OPENGL
+# ========================================================================
+# Las siguientes líneas evitan que Git ignore los archivos de dependencias
+# aunque estén dentro de carpetas llamadas "Release" o "x64".
+
+!openGLTools/
+!openGLTools/**/Release/
+!openGLTools/**/x64/
+!openGLTools/**/*.lib
+!openGLTools/**/*.dll
+!openGLTools/**/*.h
