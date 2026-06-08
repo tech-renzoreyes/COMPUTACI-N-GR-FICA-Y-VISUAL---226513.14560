@@ -1,20 +1,29 @@
 #version 330 core
 
-// Entradas desde el VBO
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 
-// Salida hacia el Fragment Shader
 out vec3 ourColor;
 
-// Variable que recibe el desplazamiento desde C++
-uniform float xOffset; 
+uniform float xOffset;
+uniform float yOffset;
 
 void main()
 {
-    // Sumamos xOffset a la posición X original del vértice
-    gl_Position = vec4(aPos.x + xOffset, aPos.y, aPos.z, 1.0);
-    
-    // Pasamos el color al Fragment Shader
+    vec3 pos = aPos;
+
+    // Triángulo superior
+    if(aPos.y > 0.2)
+    {
+        pos.x += xOffset;
+        pos.y -= yOffset;   // sentido contrario
+    }
+    else
+    {
+        pos.x += xOffset;
+        pos.y += yOffset;   // sentido normal
+    }
+
+    gl_Position = vec4(pos, 1.0);
     ourColor = aColor;
 }
