@@ -31,7 +31,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 	//Crear ventana
-	GLFWwindow* window = glfwCreateWindow(1200, 800, "Mi primera ventana", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1200, 800, "Mi primera ventana - Cristian", NULL, NULL);
 	//Validar la ventana
 	if (!window)
 	{
