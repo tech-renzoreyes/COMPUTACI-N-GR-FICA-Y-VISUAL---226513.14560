@@ -361,3 +361,13 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ========================================================================
+# REGLAS PERSONALIZADAS PARA EL PROYECTO OPENGL
+# ========================================================================
+# Desbloqueo absoluto de la carpeta openGLTools y todo su contenido
+# (dependencias, frameworks, librerías, archivos binarios, etc.)
+
+!openGLTools/
+!openGLTools/**
+!openGLTools/**/*
