@@ -401,26 +401,33 @@ int main()
         //        90.0f
         //    );
 
-        // ---- ÁRBOL 1 ----
-        myShader.setFloat("xOffset", -0.15f);//posicion de los arboles
-        myShader.setFloat("yOffset", -0.2f);
+        // ===== DIBUJAR ÁRBOL GRANDE =====
 
-        glBufferData(GL_ARRAY_BUFFER,
+        myShader.setFloat("xOffset", posX - 0.15f);
+        myShader.setFloat("yOffset", posY);
+
+        glBufferData(
+            GL_ARRAY_BUFFER,
             treeBig.size() * sizeof(float),
             treeBig.data(),
-            GL_DYNAMIC_DRAW);
+            GL_DYNAMIC_DRAW
+        );
 
         glDrawArrays(GL_LINES, 0, treeBig.size() / 6);
 
 
-        // ---- ÁRBOL 2 ----
-        myShader.setFloat("xOffset", 0.15f); //posicion de los arboles
-        myShader.setFloat("yOffset", -0.2f);
 
-        glBufferData(GL_ARRAY_BUFFER,
+        // ===== DIBUJAR ÁRBOL MEDIANO =====
+
+        myShader.setFloat("xOffset", posX + 0.15f);
+        myShader.setFloat("yOffset", posY);
+
+        glBufferData(
+            GL_ARRAY_BUFFER,
             treeMedium.size() * sizeof(float),
             treeMedium.data(),
-            GL_DYNAMIC_DRAW);
+            GL_DYNAMIC_DRAW
+        );
 
         glDrawArrays(GL_LINES, 0, treeMedium.size() / 6);
 
@@ -465,8 +472,19 @@ void userInput(GLFWwindow* window)
 
     float cameraSpeed = 1.5f * deltaTime;
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) posY -= cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) posY += cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) posX += cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) posX -= cameraSpeed;
+    // arriba
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        posY += cameraSpeed;
+
+    // abajo
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        posY -= cameraSpeed;
+
+    // izquierda
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        posX -= cameraSpeed;
+
+    // derecha
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        posX += cameraSpeed;
 }
