@@ -3,10 +3,17 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup>
+
     <ClCompile>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)openGLTools\dependencias\GLEW\include;$(MSBuildThisFileDirectory)openGLTools\dependencias\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+$(MSBuildThisFileDirectory)openGLTools\dependencias\GLEW\include;
+$(MSBuildThisFileDirectory)openGLTools\dependencias\GLFW\include;
+$(MSBuildThisFileDirectory)openGLTools\vendor;
+%(AdditionalIncludeDirectories)
+	</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+
     <Link>
       <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)openGLTools\dependencias\GLFW\lib;$(MSBuildThisFileDirectory)openGLTools\dependencias\GLEW\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32s.lib;glfw3.lib;Gdi32.lib;Opengl32.lib;User32.lib;Shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
