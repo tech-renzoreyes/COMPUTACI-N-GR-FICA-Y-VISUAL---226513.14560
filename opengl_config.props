@@ -21,12 +21,6 @@ $(MSBuildThisFileDirectory)openGLTools\vendor\imgui;
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_demo.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_draw.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_tables.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\*.cpp" />
   </ItemGroup>
 </Project>
