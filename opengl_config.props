@@ -9,6 +9,7 @@
 $(MSBuildThisFileDirectory)openGLTools\dependencias\GLEW\include;
 $(MSBuildThisFileDirectory)openGLTools\dependencias\GLFW\include;
 $(MSBuildThisFileDirectory)openGLTools\vendor;
+$(MSBuildThisFileDirectory)openGLTools\vendor\imgui;
 %(AdditionalIncludeDirectories)
 	</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -19,4 +20,13 @@ $(MSBuildThisFileDirectory)openGLTools\vendor;
       <AdditionalDependencies>glew32s.lib;glfw3.lib;Gdi32.lib;Opengl32.lib;User32.lib;Shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_demo.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_draw.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_tables.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\imgui_impl_opengl3.cpp" />
+  </ItemGroup>
 </Project>
