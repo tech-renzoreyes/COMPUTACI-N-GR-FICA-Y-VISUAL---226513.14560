@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="S8_Interfaz_imgui.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.hpp" />
@@ -136,11 +135,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Shader\fragmentShader.glsl" />
+    <None Include="res\Shader\LightCube.frag" />
+    <None Include="res\Shader\LightCube.vert" />
     <None Include="res\Shader\vertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Texture\awesomeface.png" />
     <Image Include="res\Texture\container.jpg" />
+    <Image Include="res\Texture\container2.png" />
+    <Image Include="res\Texture\container2_specular.png" />
     <Image Include="res\Texture\dbz.png" />
     <Image Include="res\Texture\jupiter.jpg" />
     <Image Include="res\Texture\marte.jpg" />

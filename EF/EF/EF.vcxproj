@@ -59,15 +59,19 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\opengl_config.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\opengl_config.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\opengl_config.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\opengl_config.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -124,6 +128,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="EF.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Camera.hpp" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\TextRenderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Shader\fragmentShader.glsl" />
+    <None Include="res\Shader\fragmentText.glsl" />
+    <None Include="res\Shader\vertexShader.glsl" />
+    <None Include="res\Shader\vertexText.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Texture\awesomeface.png" />
+    <Image Include="res\Texture\container.jpg" />
+    <Image Include="res\Texture\jupiter.jpg" />
+    <Image Include="res\Texture\marte.jpg" />
+    <Image Include="res\Texture\mercury.jpg" />
+    <Image Include="res\Texture\neptuno.jpg" />
+    <Image Include="res\Texture\pared.jpg" />
+    <Image Include="res\Texture\pluton.jpg" />
+    <Image Include="res\Texture\saturno.jpg" />
+    <Image Include="res\Texture\sun.jpg" />
+    <Image Include="res\Texture\tierra.jpg" />
+    <Image Include="res\Texture\urano.jpg" />
+    <Image Include="res\Texture\venus.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

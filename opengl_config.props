@@ -10,17 +10,22 @@ $(MSBuildThisFileDirectory)openGLTools\dependencias\GLEW\include;
 $(MSBuildThisFileDirectory)openGLTools\dependencias\GLFW\include;
 $(MSBuildThisFileDirectory)openGLTools\vendor;
 $(MSBuildThisFileDirectory)openGLTools\vendor\imgui;
+$(MSBuildThisFileDirectory)openGLTools\freetype\include;
+$(MSBuildThisFileDirectory)openGLTools\vendor\stb_image;
+$(MSBuildProjectDirectory)\src;
 %(AdditionalIncludeDirectories)
 	</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
 
     <Link>
-      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)openGLTools\dependencias\GLFW\lib;$(MSBuildThisFileDirectory)openGLTools\dependencias\GLEW\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;Gdi32.lib;Opengl32.lib;User32.lib;Shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)openGLTools\dependencias\GLFW\lib;$(MSBuildThisFileDirectory)openGLTools\dependencias\GLEW\lib\Release\x64;$(MSBuildThisFileDirectory)openGLTools\freetype\release static\vs2026\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;Gdi32.lib;Opengl32.lib;User32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\imgui\*.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)openGLTools\vendor\stb_image\*" />
+    <ClCompile Include="$(MSBuildProjectDirectory)\src\*.cpp" />
   </ItemGroup>
 </Project>

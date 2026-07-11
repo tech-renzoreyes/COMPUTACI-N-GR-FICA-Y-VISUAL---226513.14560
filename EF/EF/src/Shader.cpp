@@ -27,6 +27,13 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 
         vertexCode = vertexStream.str();
         fragmentCode = fragmentStream.str();
+
+        if (vertexCode.size() >= 3 && (unsigned char)vertexCode[0] == 0xEF && (unsigned char)vertexCode[1] == 0xBB && (unsigned char)vertexCode[2] == 0xBF) {
+            vertexCode = vertexCode.substr(3);
+        }
+        if (fragmentCode.size() >= 3 && (unsigned char)fragmentCode[0] == 0xEF && (unsigned char)fragmentCode[1] == 0xBB && (unsigned char)fragmentCode[2] == 0xBF) {
+            fragmentCode = fragmentCode.substr(3);
+        }
     }
     catch (std::ifstream::failure& e)
     {

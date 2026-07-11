@@ -33,6 +33,8 @@
   <ItemGroup>
     <None Include="res\Shader\fragmentShader.glsl" />
     <None Include="res\Shader\vertexShader.glsl" />
+    <None Include="res\Shader\LightCube.frag" />
+    <None Include="res\Shader\LightCube.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Texture\awesomeface.png">
@@ -75,6 +77,12 @@
       <Filter>Archivos de recursos</Filter>
     </Image>
     <Image Include="res\Texture\venus.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\container2.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\container2_specular.png">
       <Filter>Archivos de recursos</Filter>
     </Image>
   </ItemGroup>

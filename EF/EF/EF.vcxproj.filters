@@ -18,5 +18,69 @@
     <ClCompile Include="EF.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextRenderer.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\TextRenderer.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.hpp">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Shader\fragmentShader.glsl" />
+    <None Include="res\Shader\fragmentText.glsl" />
+    <None Include="res\Shader\vertexShader.glsl" />
+    <None Include="res\Shader\vertexText.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Texture\awesomeface.png">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\container.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\jupiter.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\marte.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\mercury.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\neptuno.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\pared.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\pluton.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\saturno.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\sun.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\tierra.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\urano.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
+    <Image Include="res\Texture\venus.jpg">
+      <Filter>Archivos de recursos</Filter>
+    </Image>
   </ItemGroup>
 </Project>

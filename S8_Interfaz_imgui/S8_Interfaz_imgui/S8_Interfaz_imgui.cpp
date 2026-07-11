@@ -10,10 +10,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image/stb_image.h"
+#include "stb_image.h"
 
-//#include "stb_image.h"
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -28,64 +27,80 @@
 
 float vertices[] =
 {
-	//Posicion Superior		Color					TexCoords
-	-0.5f,-0.5f, 0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	 0.5f,-0.5f, 0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
-	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	-0.5f, 0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,
-	-0.5f,-0.5f, 0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	//Posicion Inferior		Color					TexCoords
-	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	 0.5f,-0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
-	 0.5f, 0.5f,-0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	 0.5f, 0.5f,-0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	-0.5f, 0.5f,-0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,
-	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	//Posicion Izquierda	Color					TexCoords
-	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	-0.5f, 0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
-	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	-0.5f,-0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,
-	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	//Posicion Derecha		Color					TexCoords
-	 0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	 0.5f, 0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
-	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	 0.5f,-0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,
-	 0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	 //Posicion Posterior	Color					TexCoords
-	 -0.5f, 0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	  0.5f, 0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
-	  0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	  0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	 -0.5f, 0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,
-	 -0.5f, 0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	 //Posicion Frontal		Color					TexCoords
-	 -0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-	  0.5f,-0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
-	  0.5f,-0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	  0.5f,-0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
-	 -0.5f,-0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,
-	 -0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,
-
-
+	//Posicion Superior		Color					TexCoords		Normales
+	-0.5f,-0.5f, 0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 1.0f,
+	 0.5f,-0.5f, 0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 1.0f,
+	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		0.0f, 0.0f, 1.0f,
+	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		0.0f, 0.0f, 1.0f,
+	-0.5f, 0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 1.0f,
+	-0.5f,-0.5f, 0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 1.0f,
+	//Posicion Inferior 	Color					TexCoords		Normales
+	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f,-1.0f,
+	 0.5f,-0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f,-1.0f,
+	 0.5f, 0.5f,-0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		0.0f, 0.0f,-1.0f,
+	 0.5f, 0.5f,-0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		0.0f, 0.0f,-1.0f,
+	-0.5f, 0.5f,-0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f,-1.0f,
+	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f,-1.0f,
+	//Posicion Izquierda	Color					TexCoords		Normales
+	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
+	-0.5f, 0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
+	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
+	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
+	-0.5f,-0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
+	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
+	//Posicion Derecha		Color					TexCoords		Normales
+	 0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		1.0f, 0.0f, 0.0f,
+	 0.5f, 0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,		1.0f, 0.0f, 0.0f,
+	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		1.0f, 0.0f, 0.0f,
+	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		1.0f, 0.0f, 0.0f,
+	 0.5f,-0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,		1.0f, 0.0f, 0.0f,
+	 0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		1.0f, 0.0f, 0.0f,
+	 //Posicion Posterior	Color					TexCoords		Normales
+	-0.5f, 0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+	 0.5f, 0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	 0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	-0.5f, 0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	-0.5f, 0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f, 	0.0f, 1.0f, 0.0f,
+	//Posicion Frontal		Color					TexCoords		Normales
+	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f,-1.0f, 0.0f,
+	 0.5f,-0.5f,-0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,		0.0f,-1.0f, 0.0f,
+	 0.5f,-0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		0.0f,-1.0f, 0.0f,
+	 0.5f,-0.5f, 0.5f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,		0.0f,-1.0f, 0.0f,
+	-0.5f,-0.5f, 0.5f,		1.0f, 1.0f, 0.0f,		0.0f, 1.0f,		0.0f,-1.0f, 0.0f,
+	-0.5f,-0.5f,-0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f,-1.0f, 0.0f,
 
 };
 
-/* Functions */
+//Funciones
 void responsive(GLFWwindow* window, int width, int height);
 void userInput(GLFWwindow* window);
 void mouse_cursor_position(GLFWwindow* window, double xpos, double ypos);
 void mouse_scroll_position(GLFWwindow* window, double xoffset, double yoffset);
+
 unsigned int load_texture(const char* texture_path);
+
+glm::vec3 cubePositions[] =
+{
+	glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3(2.0f,  5.0f, -15.0f),
+	glm::vec3(-1.5f, -2.2f, -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3(2.4f, -0.4f, -3.5f),
+	glm::vec3(-1.7f,  3.0f, -7.5f),
+	glm::vec3(1.3f, -2.0f, -2.5f),
+	glm::vec3(1.5f,  2.0f, -2.5f),
+	glm::vec3(1.5f,  0.2f, -1.5f),
+	glm::vec3(-1.3f,  1.0f, -1.5f)
+};
 
 //Matrices 
 glm::mat4 model;
 glm::mat4 projection;
 glm::mat4 view;
+
+//luz
+glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 1.5f);
 
 
 //frames
@@ -129,12 +144,13 @@ int main()
 	glfwSetScrollCallback(window, mouse_scroll_position);
 	//glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_DISABLED);
 
-//Validar GLEW
+	//Validar GLEW
 	if (glewInit() != GLEW_OK)
 	{
 		std::cout << "Failed to initialize Glew\n";
 		glfwTerminate();
 	}
+
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -142,7 +158,8 @@ int main()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	//activar la plataforma
+
+	// activar la plataforma
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
@@ -150,52 +167,66 @@ int main()
 	ImGui::StyleColorsDark();
 
 
-	//Buffers
+	//Buffers Cubo principal
 	unsigned int VBO, VAO;
 
 	glGenVertexArrays(1, &VAO);
-
 	glGenBuffers(1, &VBO);
-
 	glBindVertexArray(VAO);
-
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
 
 	//vertices
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	//Colores
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	//Textura Coordenadas
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+
+	//Normales
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+	//Buffers del cubo luz
+	GLuint lightCubeVBO, lightCubeVAO;
+
+	glGenVertexArrays(1, &lightCubeVAO);
+	glGenBuffers(1, &lightCubeVBO);
+
+	glBindVertexArray(lightCubeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+
+	//vertices del cubo luz
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 
 	//Textura
-	stbi_set_flip_vertically_on_load(true);
-	unsigned int container_texture = load_texture("res/Texture/container.jpg");
-	unsigned int face_texture = load_texture("res/Texture/awesomeface.png");
-	GLuint pyramid_texture = load_texture("res/Texture/pyramid.jpg");
+	GLuint diffuseMap = load_texture("res/Texture/container2.png");
+	GLuint specularMap = load_texture("res/Texture/container2_specular.png");
 
 	//Shader
 	Shader myShader("res/Shader/vertexShader.glsl", "res/Shader/fragmentShader.glsl");
+	Shader lightCubeShader("res/Shader/LightCube.vert", "res/Shader/LightCube.frag");
 	myShader.use();
-	myShader.setInt("container_texture", 0);
-	myShader.setInt("face_texture", 1);
-	myShader.setInt("pyramid_texture", 2);
+	myShader.setInt("material.diffuse", 0);
+	myShader.setInt("material.specular", 1);
 
-	//Demo
+	//ventanas adicionales
 	bool ShowDemo = false;
+	bool mySecondWindow = false;
 
-	//Iinciamos
+	/* Game Loop */
 	while (!glfwWindowShouldClose(window))
 	{
 
-		//Cambios del FPS
+		//Iniciamos
 		userInput(window);
 		float time = glfwGetTime();
 		deltaTime = time - lastFrame;
@@ -204,38 +235,9 @@ int main()
 		float yValue = std::cos(time) / 2.0f + 0.5f; // 0.0f - 1.0f
 		float zValue = std::sin(time) / 2.0f + 0.5f; // 0.0f - 1.0f
 
-		float radius = 5.0f;
+		float radius = 3.0f;
 		float camX = std::sin(time) * radius;
 		float camZ = std::cos(time) * radius;
-
-		//Gui Variables
-		static float scale_value[3] = { 1.0f ,1.0f , 1.0f };
-		static float color_value[3] = { 1.0f,1.0f,1.0f };
-		static float rotate_value[3] = { 1.0f,1.0f,1.0f };
-		static float angle = -55.0f;
-		static bool isTexture = false;
-		static float alpha = 0.2f;
-
-		static bool isColor = false;
-		myShader.setVec3("colors", color_value[0], color_value[1], color_value[2]);
-		myShader.setBool("isColor", isColor);
-		myShader.setBool("isTexture", isTexture);
-		myShader.setFloat("alpha", alpha);
-
-		//Proyeccion
-		projection = glm::perspective(glm::radians(camera.Zoom), float(SCR_WIDTH) / float(SCR_HEIGHT), 0.1f, 100.0f);
-		myShader.setMat4("projection", projection);
-
-		//Vista
-		view = glm::mat4(1.0f);
-		view = camera.GetViewMatrix();
-		myShader.setMat4("view", view);
-
-		//Model
-		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(scale_value[0], scale_value[1], scale_value[2]));
-		model = glm::rotate(model, glm::radians(-55.0f) * angle, glm::vec3(rotate_value[0], rotate_value[1], rotate_value[2]));
-		myShader.setMat4("model", model);
 
 		//Render Color
 		glClearColor(0.1f, 0.2f, 0.3f, 1.0f); // 0.0 - 1.0
@@ -246,32 +248,72 @@ int main()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		if (ShowDemo)
-			ImGui::ShowDemoWindow(&ShowDemo);
-
+		//Primer objeto
 		myShader.use();
 
-		glBindVertexArray(VAO);
-		glLineWidth(10.0f);
+		//Puntos de luz
+		myShader.setVec3("light.position", lightPos);
+		myShader.setVec3("light.direction", -0.2f, -1.0f, -0.4f);
+		myShader.setVec3("viewPos", camera.Position);
+		myShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+		myShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+		myShader.setVec3("light.specular", 1.0f, 1.0f, 1.0);
+		myShader.setFloat("light.constant", 1.0f);
+		myShader.setFloat("light.linear", 0.09f);
+		myShader.setFloat("light.quadratic", 0.032f);
+
+		// Material
+		myShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		myShader.setFloat("material.shininess", 64.0f);
+
+
+		//Proyeccion
+		projection = glm::perspective(glm::radians(camera.Zoom), float(SCR_WIDTH) / float(SCR_HEIGHT), 0.1f, 100.0f);
+		myShader.setMat4("projection", projection);
+
+		//Vista
+		view = glm::mat4(1.0f);
+		view = camera.GetViewMatrix();
+		myShader.setMat4("view", view);
+
+
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, container_texture);
+		glBindTexture(GL_TEXTURE_2D, diffuseMap);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, face_texture);
+		glBindTexture(GL_TEXTURE_2D, specularMap);
+
+		for (int i = 0; i < 10; i++)
+		{
+			//Model
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(cubePositions[i]));
+			model = glm::rotate(model, glm::radians(-55.0f) * time, glm::vec3(0.0f, 1.0f, 0.0f));
+
+			myShader.setMat4("model", model);
+			glBindVertexArray(VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		}
+
+
+		//Segundo Objeto (cubo de luz)
+		lightCubeShader.use();
+		lightCubeShader.setMat4("projection", projection);
+		lightCubeShader.setMat4("view", view);
+		//Model
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.3f));
+		lightCubeShader.setMat4("model", model);
+		glBindVertexArray(lightCubeVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		//Datos del Imgui
-		ImGui::Begin("Este es mi primer Imgui");
-		ImGui::Text("Hola hola");
-		ImGui::Checkbox("Color", &isColor);
-		ImGui::Checkbox("Textura", &isTexture);
-		ImGui::SliderFloat("alpha", &alpha, 0.0f, 1.0f);
-		ImGui::DragFloat3("Scale", scale_value, 0.1f, 0.01f, 5.0f);
-		ImGui::SliderFloat3("Rotate", rotate_value, 0.01f, 1.0f);
-		ImGui::SliderAngle("Angle", &angle);
-		ImGui::ColorEdit3("Color", color_value);
+		//Render de Gui
+		ImGui::Begin("Light test");
+
 		ImGui::End();
 
-		//Render Imgui
+		//Render del fondo Gui
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -299,9 +341,8 @@ void userInput(GLFWwindow* window)
 {
 	const float camera_speed = 2.5f * deltaTime;
 
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) //Salir
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
-
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_TRUE) //Adelante
 		camera.ProcessKeyboard(FORWARD, deltaTime);
 	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_TRUE) //Hacia atrás

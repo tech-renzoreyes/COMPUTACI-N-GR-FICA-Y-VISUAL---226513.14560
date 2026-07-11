@@ -10,8 +10,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-// NOTA: Para cargar el JPG, necesitas incluir stb_image. 
-// Si no la tienes instalada, asegúrate de añadir el archivo "stb_image.h" a tu proyecto.
 //#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
 
@@ -32,20 +30,39 @@ int completedWords = 0;
 bool isPaused = false;
 bool isGameOver = false;
 bool isLevelCleared = false;
+int currentLevel = 1;
+bool isGameStarted = false;
 
 struct WordPair {
     string english;
     string spanish;
 };
 
-// Tus 5 palabras del vocabulario para el Nivel 1
-vector<WordPair> levelWords = {
+vector<WordPair> level1Words = {
     {"apple", "manzana"},
     {"dog", "perro"},
     {"cat", "gato"},
     {"sun", "sol"},
     {"book", "libro"}
 };
+
+vector<WordPair> level2Words = {
+    {"house", "casa"},
+    {"chair", "silla"},
+    {"table", "mesa"},
+    {"water", "agua"},
+    {"school", "escuela"}
+};
+
+vector<WordPair> level3Words = {
+    {"airplane", "avion"},
+    {"computer", "computadora"},
+    {"family", "familia"},
+    {"teacher", "profesor"},
+    {"student", "estudiante"}
+};
+
+vector<WordPair> levelWords = level1Words;
 int currentWordIndex = 0;
 
 struct GameObject {
@@ -65,43 +82,212 @@ float speed = 12.0f;
 TextRenderer text;
 
 // --- FUNCIONES DE DIBUJO DE GEOMETRÍAS ---
-void drawAirplane() {
-    // --- CUERPO / FUSELAJE AVION ---
+void drawDetailedAirplane(glm::mat4 planeModel, Shader& shaderProgram) {
+    // --- 1. FUSELAJE (Cuerpo Principal Volum�trico - Rojo) ---
+    shaderProgram.setMat4("model", planeModel);
+    shaderProgram.setVec3("color", glm::vec3(0.85f, 0.15f, 0.15f)); // Rojo deportivo
+    
     glBegin(GL_TRIANGLES);
-    glVertex3f(-1.2f, 0.0f, 0.0f); // Punta
-    glVertex3f(0.6f, 0.2f, 0.2f); // Atrás arriba derecha
-    glVertex3f(0.6f, 0.2f, -0.2f); // Atrás arriba izquierda
+    // Punta a cabina (Volumen 3D)
+    glVertex3f(-1.2f, 0.0f, 0.0f);
+    glVertex3f(-0.3f, 0.35f, 0.35f);
+    glVertex3f(-0.3f, 0.35f, -0.35f);
 
     glVertex3f(-1.2f, 0.0f, 0.0f);
-    glVertex3f(0.6f, -0.2f, -0.2f);
-    glVertex3f(0.6f, -0.2f, 0.2f);
+    glVertex3f(-0.3f, -0.35f, -0.35f);
+    glVertex3f(-0.3f, -0.35f, 0.35f);
 
     glVertex3f(-1.2f, 0.0f, 0.0f);
-    glVertex3f(0.6f, -0.2f, 0.2f);
-    glVertex3f(0.6f, 0.2f, 0.2f);
+    glVertex3f(-0.3f, -0.35f, 0.35f);
+    glVertex3f(-0.3f, 0.35f, 0.35f);
 
     glVertex3f(-1.2f, 0.0f, 0.0f);
-    glVertex3f(0.6f, 0.2f, -0.2f);
-    glVertex3f(0.6f, -0.2f, -0.2f);
+    glVertex3f(-0.3f, 0.35f, -0.35f);
+    glVertex3f(-0.3f, -0.35f, -0.35f);
+
+    // Cuerpo medio a cola (Bloque 3D grueso)
+    // Top
+    glVertex3f(-0.3f, 0.35f, -0.35f); glVertex3f(-0.3f, 0.35f, 0.35f); glVertex3f(0.8f, 0.15f, 0.15f);
+    glVertex3f(0.8f, 0.15f, 0.15f); glVertex3f(0.8f, 0.15f, -0.15f); glVertex3f(-0.3f, 0.35f, -0.35f);
+    // Bottom
+    glVertex3f(-0.3f, -0.35f, -0.35f); glVertex3f(0.8f, -0.15f, -0.15f); glVertex3f(-0.3f, -0.35f, 0.35f);
+    glVertex3f(-0.3f, -0.35f, 0.35f); glVertex3f(0.8f, -0.15f, -0.15f); glVertex3f(0.8f, -0.15f, 0.15f);
+    // Left
+    glVertex3f(-0.3f, 0.35f, -0.35f); glVertex3f(0.8f, 0.15f, -0.15f); glVertex3f(-0.3f, -0.35f, -0.35f);
+    glVertex3f(-0.3f, -0.35f, -0.35f); glVertex3f(0.8f, 0.15f, -0.15f); glVertex3f(0.8f, -0.15f, -0.15f);
+    // Right
+    glVertex3f(-0.3f, 0.35f, 0.35f); glVertex3f(-0.3f, -0.35f, 0.35f); glVertex3f(0.8f, 0.15f, 0.15f);
+    glVertex3f(0.8f, 0.15f, 0.15f); glVertex3f(-0.3f, -0.35f, 0.35f); glVertex3f(0.8f, -0.15f, 0.15f);
     glEnd();
 
-    // --- ALAS ---
+    // --- 2. DOBLE ALA (Avion Biplano 3D - Blancas y Amarillas) ---
+    shaderProgram.setVec3("color", glm::vec3(0.95f, 0.95f, 0.95f)); // Blanco
     glBegin(GL_TRIANGLES);
-    glVertex3f(-0.2f, 0.0f, 0.0f);
-    glVertex3f(0.4f, 0.0f, 0.0f);
-    glVertex3f(0.4f, 0.0f, 0.6f);
+    // Ala Inferior Izquierda (y = -0.2f)
+    glVertex3f(-0.1f, -0.2f, 0.15f);
+    glVertex3f(0.4f, -0.2f, 0.15f);
+    glVertex3f(0.3f, -0.2f, 1.4f);
+    glVertex3f(-0.1f, -0.2f, 0.15f);
+    glVertex3f(0.3f, -0.2f, 1.4f);
+    glVertex3f(0.0f, -0.2f, 1.3f);
 
-    glVertex3f(-0.2f, 0.0f, 0.0f);
-    glVertex3f(0.4f, 0.0f, 0.0f);
-    glVertex3f(0.4f, 0.0f, -0.6f);
+    // Ala Inferior Derecha (y = -0.2f)
+    glVertex3f(-0.1f, -0.2f, -0.15f);
+    glVertex3f(0.3f, -0.2f, -1.4f);
+    glVertex3f(0.4f, -0.2f, -0.15f);
+    glVertex3f(-0.1f, -0.2f, -0.15f);
+    glVertex3f(0.0f, -0.2f, -1.3f);
+    glVertex3f(0.3f, -0.2f, -1.4f);
+
+    // Ala Superior Izquierda (y = 0.5f)
+    glVertex3f(-0.1f, 0.5f, 0.15f);
+    glVertex3f(0.4f, 0.5f, 0.15f);
+    glVertex3f(0.3f, 0.5f, 1.4f);
+    glVertex3f(-0.1f, 0.5f, 0.15f);
+    glVertex3f(0.3f, 0.5f, 1.4f);
+    glVertex3f(0.0f, 0.5f, 1.3f);
+
+    // Ala Superior Derecha (y = 0.5f)
+    glVertex3f(-0.1f, 0.5f, -0.15f);
+    glVertex3f(0.3f, 0.5f, -1.4f);
+    glVertex3f(0.4f, 0.5f, -0.15f);
+    glVertex3f(-0.1f, 0.5f, -0.15f);
+    glVertex3f(0.0f, 0.5f, -1.3f);
+    glVertex3f(0.3f, 0.5f, -1.4f);
     glEnd();
 
-    // --- COLA ---
+    // Bordes de ataque del ala en Amarillo
+    shaderProgram.setVec3("color", glm::vec3(1.0f, 0.8f, 0.0f)); // Amarillo
     glBegin(GL_TRIANGLES);
-    glVertex3f(0.2f, 0.0f, 0.0f);
-    glVertex3f(0.6f, 0.0f, 0.0f);
-    glVertex3f(0.6f, 0.4f, 0.0f);
+    // Ala superior puntas
+    glVertex3f(0.3f, 0.5f, 1.4f); glVertex3f(0.4f, 0.5f, 0.15f); glVertex3f(0.42f, 0.5f, 0.15f);
+    glVertex3f(0.3f, 0.5f, -1.4f); glVertex3f(0.42f, 0.5f, -0.15f); glVertex3f(0.4f, 0.5f, -0.15f);
+    // Ala inferior puntas
+    glVertex3f(0.3f, -0.2f, 1.4f); glVertex3f(0.4f, -0.2f, 0.15f); glVertex3f(0.42f, -0.2f, 0.15f);
+    glVertex3f(0.3f, -0.2f, -1.4f); glVertex3f(0.42f, -0.2f, -0.15f); glVertex3f(0.4f, -0.2f, -0.15f);
     glEnd();
+
+    // --- Soporte de las alas (Montantes 3D - Gris metalizado) ---
+    shaderProgram.setVec3("color", glm::vec3(0.5f, 0.53f, 0.55f));
+    glBegin(GL_LINES);
+    // Struts Izquierdos
+    glVertex3f(0.1f, -0.2f, 1.1f); glVertex3f(0.1f, 0.5f, 1.1f);
+    glVertex3f(0.3f, -0.2f, 1.1f); glVertex3f(0.3f, 0.5f, 1.1f);
+    // Struts Derechos
+    glVertex3f(0.1f, -0.2f, -1.1f); glVertex3f(0.1f, 0.5f, -1.1f);
+    glVertex3f(0.3f, -0.2f, -1.1f); glVertex3f(0.3f, 0.5f, -1.1f);
+    glEnd();
+
+    // --- 3. CABINA (Cristal Celeste con volumen) ---
+    shaderProgram.setVec3("color", glm::vec3(0.3f, 0.8f, 1.0f)); // Celeste brillante
+    glBegin(GL_TRIANGLES);
+    glVertex3f(-0.35f, 0.35f, 0.0f);
+    glVertex3f(0.15f, 0.35f, 0.18f);
+    glVertex3f(0.15f, 0.35f, -0.18f);
+
+    glVertex3f(-0.35f, 0.35f, 0.0f);
+    glVertex3f(0.1f, 0.65f, 0.0f); // Cabina alta
+    glVertex3f(0.15f, 0.35f, 0.18f);
+
+    glVertex3f(-0.35f, 0.35f, 0.0f);
+    glVertex3f(0.15f, 0.35f, -0.18f);
+    glVertex3f(0.1f, 0.65f, 0.0f);
+
+    glVertex3f(0.1f, 0.65f, 0.0f);
+    glVertex3f(0.35f, 0.25f, -0.1f);
+    glVertex3f(0.35f, 0.25f, 0.1f);
+
+    glVertex3f(0.1f, 0.65f, 0.0f);
+    glVertex3f(0.15f, 0.35f, -0.18f);
+    glVertex3f(0.35f, 0.25f, -0.1f);
+
+    glVertex3f(0.1f, 0.65f, 0.0f);
+    glVertex3f(0.35f, 0.25f, 0.1f);
+    glVertex3f(0.15f, 0.35f, 0.18f);
+    glEnd();
+
+    // --- 4. COLA (Aletas 3D gruesas) ---
+    shaderProgram.setVec3("color", glm::vec3(0.85f, 0.15f, 0.15f)); // Rojo
+    glBegin(GL_TRIANGLES);
+    // Vertical
+    glVertex3f(0.4f, 0.15f, 0.0f);
+    glVertex3f(0.8f, 0.15f, 0.0f);
+    glVertex3f(0.8f, 0.7f, 0.0f);
+    glEnd();
+
+    shaderProgram.setVec3("color", glm::vec3(0.95f, 0.95f, 0.95f)); // Blanco
+    glBegin(GL_TRIANGLES);
+    // Horizontal Izquierda
+    glVertex3f(0.5f, 0.15f, 0.0f);
+    glVertex3f(0.8f, 0.15f, 0.0f);
+    glVertex3f(0.8f, 0.15f, 0.45f);
+
+    // Horizontal Derecha
+    glVertex3f(0.5f, 0.15f, 0.0f);
+    glVertex3f(0.8f, 0.15f, -0.45f);
+    glVertex3f(0.8f, 0.15f, 0.0f);
+    glEnd();
+
+    // --- 5. H�LICE GIRATORIA ---
+    // Spinner
+    shaderProgram.setVec3("color", glm::vec3(0.9f, 0.9f, 0.9f));
+    glBegin(GL_TRIANGLES);
+    glVertex3f(-1.32f, 0.0f, 0.0f);
+    glVertex3f(-1.2f, 0.12f, 0.12f);
+    glVertex3f(-1.2f, 0.12f, -0.12f);
+
+    glVertex3f(-1.32f, 0.0f, 0.0f);
+    glVertex3f(-1.2f, -0.12f, -0.12f);
+    glVertex3f(-1.2f, -0.12f, 0.12f);
+
+    glVertex3f(-1.32f, 0.0f, 0.0f);
+    glVertex3f(-1.2f, -0.12f, 0.12f);
+    glVertex3f(-1.2f, 0.12f, 0.12f);
+
+    glVertex3f(-1.32f, 0.0f, 0.0f);
+    glVertex3f(-1.2f, 0.12f, -0.12f);
+    glVertex3f(-1.2f, -0.12f, -0.12f);
+    glEnd();
+
+    // Palas giratorias
+    glm::mat4 propModel = glm::translate(planeModel, glm::vec3(-1.24f, 0.0f, 0.0f));
+    propModel = glm::rotate(propModel, (float)glfwGetTime() * 30.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    shaderProgram.setMat4("model", propModel);
+    shaderProgram.setVec3("color", glm::vec3(0.12f, 0.12f, 0.12f)); // Gris oscuro
+
+    glBegin(GL_QUADS);
+    // Pala 1
+    glVertex3f(0.0f, -0.05f, -0.65f);
+    glVertex3f(0.0f, 0.05f, -0.65f);
+    glVertex3f(0.0f, 0.05f, 0.0f);
+    glVertex3f(0.0f, -0.05f, 0.0f);
+    // Pala 2
+    glVertex3f(0.0f, -0.05f, 0.0f);
+    glVertex3f(0.0f, 0.05f, 0.0f);
+    glVertex3f(0.0f, 0.05f, 0.65f);
+    glVertex3f(0.0f, -0.05f, 0.65f);
+    glEnd();
+}
+
+void drawPanel2D(float x, float y, float width, float height, glm::vec3 color, float alphaVal, Shader& shaderProgram) {
+    shaderProgram.use();
+    shaderProgram.setBool("useTexture", false);
+    shaderProgram.setVec3("color", color);
+    shaderProgram.setFloat("alpha", alphaVal);
+    
+    glm::mat4 orthoProj = glm::ortho(0.0f, 1200.0f, 0.0f, 800.0f);
+    shaderProgram.setMat4("projection", orthoProj);
+    shaderProgram.setMat4("view", glm::mat4(1.0f));
+    shaderProgram.setMat4("model", glm::mat4(1.0f));
+    
+    glBegin(GL_QUADS);
+    glVertex3f(x, y, 0.0f);
+    glVertex3f(x + width, y, 0.0f);
+    glVertex3f(x + width, y + height, 0.0f);
+    glVertex3f(x, y + height, 0.0f);
+    glEnd();
+    
+    shaderProgram.setFloat("alpha", 1.0f);
 }
 
 // Función para dibujar una esfera perfecta y pasarle su color al shader
@@ -116,7 +302,7 @@ void drawCloudSphereWithGradient(glm::mat4 baseModel, glm::vec3 offset, float ra
     glm::vec3 colorTop(1.0f, 1.0f, 1.0f);
     glm::vec3 colorBottom(0.65f, 0.68f, 0.72f);
 
-    for (int i = 0; i <= lats; i++) {
+    for (int i = 1; i <= lats; i++) {
         float factorY = (float)i / lats;
         glm::vec3 ringColor = glm::mix(colorBottom, colorTop, factorY);
         shaderProgram.setVec3("color", ringColor);
@@ -131,7 +317,7 @@ void drawCloudSphereWithGradient(glm::mat4 baseModel, glm::vec3 offset, float ra
 
         glBegin(GL_QUAD_STRIP);
         for (int j = 0; j <= longs; j++) {
-            float lng = 2.0f * 3.14159265f * (float)(j - 1) / longs;
+            float lng = 2.0f * 3.14159265f * (float)j / longs;
             float x = cos(lng);
             float y = sin(lng);
 
@@ -154,9 +340,9 @@ void drawCloud(glm::mat4 baseModel, Shader& shaderProgram) {
 
 // --- NUEVA FUNCIÓN PARA EL SOL TEXTURIZADO GIRATORIO ---
 void drawSun3D(glm::mat4 baseModel, float rotationTime, float radius, unsigned int textureID, Shader& shaderProgram) {
-    glm::mat4 sunModel = glm::translate(baseModel, glm::vec3(0.0f)); // posición base
+    glm::mat4 sunModel = glm::translate(baseModel, glm::vec3(0.0f)); // posici�n base
     sunModel = glm::rotate(sunModel, rotationTime * 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
-    sunModel = glm::scale(sunModel, glm::vec3(radius)); // <--- Aquí se aplica el tamaño chico
+    sunModel = glm::scale(sunModel, glm::vec3(radius)); // <--- Aqu� se aplica el tama�o chico
     shaderProgram.setMat4("model", sunModel);
 
     // Activamos las texturas en el Fragment Shader
@@ -170,7 +356,7 @@ void drawSun3D(glm::mat4 baseModel, float rotationTime, float radius, unsigned i
     int lats = 20;
     int longs = 20;
 
-    for (int i = 0; i <= lats; i++) {
+    for (int i = 1; i <= lats; i++) {
         float lat0 = 3.14159265f * (-0.5f + (float)(i - 1) / lats);
         float z0 = sin(lat0);
         float r0 = cos(lat0);
@@ -181,15 +367,15 @@ void drawSun3D(glm::mat4 baseModel, float rotationTime, float radius, unsigned i
 
         glBegin(GL_QUAD_STRIP);
         for (int j = 0; j <= longs; j++) {
-            float lng = 2.0f * 3.14159265f * (float)(j - 1) / longs;
+            float lng = 2.0f * 3.14159265f * (float)j / longs;
             float x = cos(lng);
             float y = sin(lng);
 
-            float u = (float)(j - 1) / longs;
+            float u = (float)j / longs;
             float v0 = (float)(i - 1) / lats;
             float v1 = (float)i / lats;
 
-            // CORRECCIÓN MODERNA: Pasamos la coordenada UV al atributo layout 1
+            // CORRECCI�N MODERNA: Pasamos la coordenada UV al atributo layout 1
             glVertexAttrib2f(1, u, v1);
             glVertex3f(x * r1, y * r1, z1);
 
@@ -198,7 +384,7 @@ void drawSun3D(glm::mat4 baseModel, float rotationTime, float radius, unsigned i
         }
         glEnd();
     }
-    // Desactivamos la textura para los siguientes renders (como el avión)
+    // Desactivamos la textura para los siguientes renders (como el avi�n)
     shaderProgram.setBool("useTexture", false);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -211,11 +397,60 @@ void drawGround() {
 }
 
 void input(GLFWwindow* w) {
+    if (!isGameStarted && glfwGetKey(w, GLFW_KEY_ENTER) == GLFW_PRESS) {
+        isGameStarted = true;
+        return;
+    }
     if (isPaused && glfwGetKey(w, GLFW_KEY_ENTER) == GLFW_PRESS) {
         isPaused = false;
         currentWordIndex = (currentWordIndex + 1) % levelWords.size();
+        if (completedWords >= 5) {
+            isLevelCleared = true;
+        }
     }
-    if (!isPaused && !isGameOver && !isLevelCleared) {
+    if (isLevelCleared && glfwGetKey(w, GLFW_KEY_ENTER) == GLFW_PRESS) {
+        if (currentLevel < 3) {
+            currentLevel++;
+            if (currentLevel == 2) {
+                levelWords = level2Words;
+                speed = 17.0f;
+            } else if (currentLevel == 3) {
+                levelWords = level3Words;
+                speed = 22.0f;
+            }
+            completedWords = 0;
+            currentWordIndex = 0;
+            lives = 3;
+            activeObjects.clear();
+            planePos = glm::vec3(0.0f, 5.0f, 0.0f);
+            isLevelCleared = false;
+        } else {
+            // Reiniciar juego completo al terminar nivel 3
+            currentLevel = 1;
+            levelWords = level1Words;
+            speed = 12.0f;
+            completedWords = 0;
+            currentWordIndex = 0;
+            lives = 3;
+            activeObjects.clear();
+            planePos = glm::vec3(0.0f, 5.0f, 0.0f);
+            isLevelCleared = false;
+            isGameStarted = false;
+        }
+    }
+    if (isGameOver && glfwGetKey(w, GLFW_KEY_ENTER) == GLFW_PRESS) {
+        currentLevel = 1;
+        levelWords = level1Words;
+        speed = 12.0f;
+        completedWords = 0;
+        currentWordIndex = 0;
+        lives = 3;
+        activeObjects.clear();
+        planePos = glm::vec3(0.0f, 5.0f, 0.0f);
+        isGameOver = false;
+        isGameStarted = false;
+    }
+    if (isGameStarted && !isPaused && !isGameOver && !isLevelCleared) {
         if (glfwGetKey(w, GLFW_KEY_W) == GLFW_PRESS && planePos.y < 8.0f)
             planePos.y += 7.0f * deltaTime;
         if (glfwGetKey(w, GLFW_KEY_S) == GLFW_PRESS && planePos.y > 2.5f)
@@ -288,12 +523,10 @@ int main() {
         planeModel = glm::rotate(planeModel, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         planeModel = glm::rotate(planeModel, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-        shader.setMat4("model", planeModel);
-        shader.setVec3("color", glm::vec3(0.8f, 0.1f, 0.1f)); // Color del avión
-        drawAirplane();
+                drawDetailedAirplane(planeModel, shader);
 
         // --- LÓGICA DE APARICIÓN EN EL CIELO ---
-        if (!isPaused && !isGameOver && !isLevelCleared) {
+        if (isGameStarted && !isPaused && !isGameOver && !isLevelCleared) {
             spawnTimer += deltaTime;
             if (spawnTimer >= SPAWN_INTERVAL) {
                 spawnTimer = 0.0f;
@@ -310,7 +543,7 @@ int main() {
         for (size_t i = 0; i < activeObjects.size(); i++) {
             if (!activeObjects[i].active) continue;
 
-            if (!isPaused && !isGameOver && !isLevelCleared) {
+            if (isGameStarted && !isPaused && !isGameOver && !isLevelCleared) {
                 activeObjects[i].position.x -= speed * deltaTime;
             }
 
@@ -348,7 +581,7 @@ int main() {
             //    }
             //}
             // --- DETECCIÓN DE COLISIONES (LÓGICA INVERTIDA) ---
-            if (!isPaused && !isGameOver && !isLevelCleared) {
+            if (isGameStarted && !isPaused && !isGameOver && !isLevelCleared) {
                 if (abs(activeObjects[i].position.x - planePos.x) < 1.1f &&
                     abs(activeObjects[i].position.y - planePos.y) < 1.1f) {
 
@@ -363,7 +596,6 @@ int main() {
                         // ¡AHORA LA NUBE DESBLOQUEA LA PALABRA!
                         isPaused = true;
                         completedWords++;
-                        if (completedWords >= 5) { isLevelCleared = true; isPaused = false; }
                     }
                 }
             }
@@ -380,30 +612,96 @@ int main() {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        // 1. DIBUJAR PANELES DE FONDO (GUI)
+        // Panel de Inicio
+        if (!isGameStarted) {
+            // Borde dorado
+            drawPanel2D(295.0f, 185.0f, 610.0f, 430.0f, glm::vec3(1.0f, 0.84f, 0.0f), 1.0f, shader);
+            // Cuerpo
+            drawPanel2D(300.0f, 190.0f, 600.0f, 420.0f, glm::vec3(0.08f, 0.1f, 0.12f), 0.95f, shader);
+        }
+
+        // Panel HUD (Solo cuando el juego ha comenzado)
+        if (isGameStarted) {
+            drawPanel2D(15.0f, 650.0f, 280.0f, 135.0f, glm::vec3(0.08f, 0.1f, 0.12f), 0.75f, shader);
+        }
+        
+        // Panel de Pausa (Palabra)
+        if (isPaused && !isGameOver && !isLevelCleared) {
+            // Borde dorado
+            drawPanel2D(335.0f, 275.0f, 530.0f, 270.0f, glm::vec3(1.0f, 0.84f, 0.0f), 1.0f, shader);
+            // Cuerpo
+            drawPanel2D(340.0f, 280.0f, 520.0f, 260.0f, glm::vec3(0.08f, 0.1f, 0.12f), 0.95f, shader);
+        }
+
+        // Panel de Game Over
+        if (isGameOver) {
+            // Borde rojo
+            drawPanel2D(345.0f, 355.0f, 510.0f, 210.0f, glm::vec3(0.8f, 0.1f, 0.1f), 1.0f, shader);
+            // Cuerpo
+            drawPanel2D(350.0f, 360.0f, 500.0f, 200.0f, glm::vec3(0.08f, 0.1f, 0.12f), 0.95f, shader);
+        }
+
+        // Panel de Nivel Completado
+        if (isLevelCleared) {
+            // Borde verde o dorado
+            glm::vec3 borderColor = (currentLevel < 3) ? glm::vec3(0.0f, 0.8f, 0.3f) : glm::vec3(1.0f, 0.84f, 0.0f);
+            drawPanel2D(315.0f, 155.0f, 570.0f, 570.0f, borderColor, 1.0f, shader);
+            drawPanel2D(320.0f, 160.0f, 560.0f, 560.0f, glm::vec3(0.08f, 0.1f, 0.12f), 0.95f, shader);
+        }
+
+        // 2. DIBUJAR TEXTO (sobre los paneles)
         textShader.use();
         glm::mat4 orthoProj = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT);
         textShader.setMat4("projection", orthoProj);
 
-        text.RenderText(textShader.ID, "VIDAS: " + to_string(lives), 30, 750, 0.9f, glm::vec3(1.0f, 0.0f, 0.0f));
-        text.RenderText(textShader.ID, "PALABRAS: " + to_string(completedWords) + " / 5", 30, 710, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f));
+        // Panel de Inicio
+        if (!isGameStarted) {
+            text.RenderText(textShader.ID, "PILOTO 3D: APRENDEMOS INGLES", 330, 540, 0.7f, glm::vec3(1.0f, 0.84f, 0.0f));
+            text.RenderText(textShader.ID, "Bienvenido piloto! Instrucciones de vuelo:", 330, 480, 0.45f, glm::vec3(0.9f, 0.9f, 0.9f));
+            
+            text.RenderText(textShader.ID, "- Usa [ W ] y [ S ] para subir y bajar el avion.", 340, 430, 0.45f, glm::vec3(0.9f, 0.9f, 0.9f));
+            text.RenderText(textShader.ID, "- Esquiva los SOLES (te quitan 1 vida).", 340, 390, 0.45f, glm::vec3(1.0f, 0.3f, 0.3f));
+            text.RenderText(textShader.ID, "- Toca las NUBES para aprender nuevas palabras.", 340, 350, 0.45f, glm::vec3(0.2f, 0.8f, 1.0f));
+            text.RenderText(textShader.ID, "- Completa 5 palabras para superar cada nivel.", 340, 310, 0.45f, glm::vec3(0.2f, 1.0f, 0.4f));
+            
+            text.RenderText(textShader.ID, "Presiona [ ENTER ] para despegar!", 380, 240, 0.55f, glm::vec3(1.0f, 1.0f, 1.0f));
+        }
+
+        // Stats del HUD (Solo cuando el juego ha comenzado)
+        if (isGameStarted) {
+            text.RenderText(textShader.ID, "VIDAS: " + to_string(lives), 35, 750, 0.8f, glm::vec3(1.0f, 0.2f, 0.2f));
+            text.RenderText(textShader.ID, "PALABRAS: " + to_string(completedWords) + " / 5", 35, 710, 0.65f, glm::vec3(0.9f, 0.9f, 0.9f));
+            text.RenderText(textShader.ID, "NIVEL: " + to_string(currentLevel), 35, 670, 0.65f, glm::vec3(1.0f, 0.84f, 0.0f));
+        }
 
         if (isPaused && !isGameOver && !isLevelCleared) {
-            text.RenderText(textShader.ID, "PALABRA DESBLOQUEADA", 800, 750, 0.55f, glm::vec3(1.0f, 1.0f, 0.0f));
-            text.RenderText(textShader.ID, "Ingles: " + levelWords[currentWordIndex].english, 850, 715, 0.55f, glm::vec3(1.0f, 0.0f, 0.0f));
-            text.RenderText(textShader.ID, "Espanol: " + levelWords[currentWordIndex].spanish, 850, 685, 0.55f, glm::vec3(0.0f, 0.0f, 0.5f));
-            text.RenderText(textShader.ID, "Presiona [ENTER] para continuar", 810, 650, 0.45f, glm::vec3(0.0f, 1.0f, 0.0f));
+            text.RenderText(textShader.ID, "PALABRA DESBLOQUEADA", 370, 490, 0.7f, glm::vec3(1.0f, 0.84f, 0.0f));
+            text.RenderText(textShader.ID, "Ingles: " + levelWords[currentWordIndex].english, 400, 430, 0.65f, glm::vec3(1.0f, 1.0f, 1.0f));
+            text.RenderText(textShader.ID, "Espanol: " + levelWords[currentWordIndex].spanish, 400, 385, 0.65f, glm::vec3(0.2f, 0.8f, 1.0f));
+            text.RenderText(textShader.ID, "Presiona [ENTER] para continuar", 365, 320, 0.45f, glm::vec3(0.2f, 1.0f, 0.4f));
         }
 
         if (isGameOver) {
-            text.RenderText(textShader.ID, "GAME OVER", 430, 630, 1.5f, glm::vec3(1.0f, 0.0f, 0.0f));
+            text.RenderText(textShader.ID, "GAME OVER", 480, 480, 1.2f, glm::vec3(1.0f, 0.2f, 0.2f));
+            text.RenderText(textShader.ID, "Presiona [ENTER] para reiniciar", 380, 410, 0.55f, glm::vec3(0.9f, 0.9f, 0.9f));
         }
 
         if (isLevelCleared) {
-            text.RenderText(textShader.ID, "NIVEL 1 SUPERADO", 630, 720, 0.9f, glm::vec3(0.0f, 1.0f, 0.3f));
-            int y = 680;
-            for (const auto& w : levelWords) {
-                text.RenderText(textShader.ID, w.english + " = " + w.spanish, 680, y, 0.8f, glm::vec3(1.0f, 1.0f, 1.0f));
-                y -= 35;
+            if (currentLevel < 3) {
+                text.RenderText(textShader.ID, "NIVEL " + to_string(currentLevel) + " SUPERADO!", 410, 660, 0.8f, glm::vec3(0.2f, 1.0f, 0.4f));
+                text.RenderText(textShader.ID, "Presiona [ENTER] para ir al Nivel " + to_string(currentLevel + 1), 350, 615, 0.5f, glm::vec3(0.9f, 0.9f, 0.9f));
+                
+                text.RenderText(textShader.ID, "Vocabulario aprendido:", 430, 530, 0.55f, glm::vec3(1.0f, 0.84f, 0.0f));
+                int y = 475;
+                for (const auto& w : levelWords) {
+                    text.RenderText(textShader.ID, w.english + " = " + w.spanish, 460, y, 0.55f, glm::vec3(0.9f, 0.9f, 0.9f));
+                    y -= 45;
+                }
+            } else {
+                text.RenderText(textShader.ID, "JUEGO COMPLETADO!", 410, 520, 0.9f, glm::vec3(1.0f, 0.84f, 0.0f));
+                text.RenderText(textShader.ID, "Felicitaciones! Has aprendido todo el vocabulario.", 340, 460, 0.5f, glm::vec3(0.9f, 0.9f, 0.9f));
+                text.RenderText(textShader.ID, "Presiona [ENTER] para volver a jugar", 380, 400, 0.5f, glm::vec3(0.2f, 1.0f, 0.4f));
             }
         }
 
